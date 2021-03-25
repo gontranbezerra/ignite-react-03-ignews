@@ -1,4 +1,4 @@
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, GetStaticProps } from 'next';
 
 import Head from 'next/head';
 
@@ -40,8 +40,15 @@ export default function Home(props: HomeProduct) {
   );
 }
 
-// função padrão para rodar no Nodejs dentro do Next no lado servidor
-export const getServerSideProps: GetServerSideProps = async () => {
+// Existem 3 formas de fazer uma chamada API no Next:
+// Client Side
+// Server Side Rendering - SSR
+// Static Side Generation - SSG
+
+// função padrão para rodar no Nodejs dentro do Next no lado servidor (SSR - Server Side Rendering )
+// export const getServerSideProps: GetServerSideProps = async () => {
+// função padrão para gerar uma página estática dentro do Next no lado servidor (SSG - Static Side Generation)
+export const getStaticProps: GetStaticProps = async () => {
   // const price = await stripe.prices.retrieve('price_1IYuZMKL9ACPD24bzlYMDh9U', {
   //   expand: ['product'], // pra trazer mais informaões
   // });
@@ -55,9 +62,15 @@ export const getServerSideProps: GetServerSideProps = async () => {
     }).format(price.unit_amount / 100),
   };
 
+  // return {
+  //   props: {
+  //     product,
+  //   },
+  // };
   return {
     props: {
       product,
     },
+    revalidate: 60 * 60 * 24, // 24 hours
   };
 };
